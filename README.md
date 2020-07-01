@@ -1,7 +1,6 @@
 ## All in the Exponential Family: Bregman Duality in Thermodynamic Variational Inference
 
-Code for (All in the Exponential Family: Bregman Duality in Thermodynamic Variational Inference)[https://arxiv.org/].
----
+ Code for [All in the Exponential Family: Bregman Duality in Thermodynamic Variational Inference](https://arxiv.org/)
 
 ```
 @inproceedings{brekelmans2019allin,
