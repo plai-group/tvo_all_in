@@ -294,30 +294,23 @@ class ProbModelBaseClass(nn.Module):
 
             if self.args.loss == 'tvo_reparam': # p optimized using tvo
                 wake_theta_loss = self.get_tvo_loss(data)
-            elif self.args.loss == 'tvo_reparam_q_iwae': # p optimized using IWAE
-                wake_theta_loss = self.get_iwae_loss(data)
             elif self.args.loss == 'iwae_dreg': # p optimized using IWAE (DReG update is only for q)
                 wake_theta_loss = self.get_iwae_loss(data)
             else:
-                wake_theta_loss = self.get_wake_theta_loss(data)
+                raise ValueError(
+                    "{} is an invalid loss".format(self.args.loss))
             wake_theta_loss.backward()
             optimizer_theta.step()
 
             optimizer_phi.zero_grad()
             optimizer_theta.zero_grad()
 
-            if self.args.loss in ['tvo_reparam_q_iwae', 'tvo_reparam']:
+            if self.args.loss in ['tvo_reparam']:
                 sleep_phi_loss = self.get_tvo_reparam_loss(data)
                 sleep_phi_loss.backward()
             elif self.args.loss == 'iwae_dreg':
                 sleep_phi_loss = self.get_iwae_dreg_loss(data)
                 sleep_phi_loss.backward()
-            elif self.args.loss == 'wake-sleep':
-                sleep_phi_loss = self.get_sleep_phi_loss(data)
-                sleep_phi_loss.backward()
-            elif self.args.loss == 'wake-wake':
-                wake_phi_loss = self.get_wake_phi_loss(data)
-                wake_phi_loss.backward()
             else:
                 raise ValueError(
                     "{} is an invalid loss".format(self.args.loss))
@@ -513,22 +506,6 @@ class ProbModelBaseClass(nn.Module):
         return compute_iwae_loss(log_weight)
 
 
-    def get_stl_iwae_loss(self, data, set = True):
-        '''
-        IWAE loss = log mean p(x,z) / q(z|x)
-        '''
-        assert self.reparam is True, 'Reparam must be on for iwae loss'
-
-        #if self.args.stop_parameter_grad:
-        self.enable_stop_grads()
-
-        if set:
-            self.set_internals(data, self.args.S)
-
-
-        log_weight = self.elbo()
-        return compute_iwae_loss(log_weight)
-
     def get_iwae_dreg_loss(self, data):
         assert self.reparam is True, 'Reparam must be on for iwae loss'
 
@@ -555,17 +532,6 @@ class ProbModelBaseClass(nn.Module):
         loss = -train_elbo
         return loss
 
-    def get_reinforce_loss(self, data):
-        assert self.reparam is False, 'Reparam must be off for reinforce loss'
-        self.set_internals(data, self.args.S)
-
-        log_weight = self.elbo()
-        log_q = self.log_guide()
-
-        reinforce = log_weight.detach() * log_q + log_weight
-
-        loss = -torch.mean(reinforce)
-        return loss
 
     def get_tvo_loss(self, data):
         assert self.reparam is False or self.args.loss == 'tvo_reparam', 'Reparam must be off for TVO loss'
