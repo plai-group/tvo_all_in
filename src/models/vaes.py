@@ -1,7 +1,5 @@
 from src.models.base import ProbModelBaseClass
 from src.models.mlp import init_mlp, init_two_prong_mlp
-#from src.models.vamp import Vamp
-#import src.models.flow_arch as flows_
 import torch
 from torch.distributions import Independent
 import torch.nn as nn
