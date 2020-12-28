@@ -102,13 +102,15 @@ class HMC(nn.Module):
         super().__init__()
 
     def forward(self, initial_samples, initial_weights, x, energy_z = None):
-
+        
         '''
         Arguments
         ----------
         initial_samples = (initial_z, initial_v) : tensors
             assume initial point of trajectory is given 
                 (TO DO: incorporate sampling here if useful)
+                
+        initial_weights : tensor.   (or could be handled elsewhere)
         
         energy_z : losses.energies.InterpolatedEnergy
             option to replace (if necessary?)
@@ -117,7 +119,7 @@ class HMC(nn.Module):
         ----------
         final_samples = (current_z, current_v) : tensors
 
-        Δ log density ( = 0 for hamiltonian dynamics)
+        Δ log density ( = 0 for hamiltonian dynamics), or initial_weights + Δ log density
 
         '''
         if energy_z is not None:
