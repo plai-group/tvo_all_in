@@ -1,7 +1,6 @@
 import torch
 from torch import nn
 from losses.energies import InterpolatedEnergy
-# Change to inherit from Flow Class:  class HMC(Flow2D): or  class HMC(FlowLayer):
 
 class InterpolatedEnergy:
     ''' Parameters 
