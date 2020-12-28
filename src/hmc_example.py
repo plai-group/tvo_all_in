@@ -70,7 +70,7 @@ class InterpolatedEnergy:
         return self.grad(z, x, multi_sample)
 
 
-# Eventually of a FLOW (or Transform) base class (e.g. RealNVP, IAF, etc.) e.g. (https://github.com/bayesiains/nflows/tree/master/nflows)
+# Eventually of a FLOW (or Transform) base class (e.g. RealNVP, IAF, etc.) e.g. (https://github.com/bayesiains/nflows/tree/master/nflows (with spline transforms))
 class HMC(nn.Module):
 
     '''
@@ -101,7 +101,7 @@ class HMC(nn.Module):
         self.energy_z = energy_z
         super().__init__()
 
-    def forward(self, initial_samples, initial_weights, x, energy_z = None):
+    def forward(self, initial_samples, x, energy_z = None):
         
         '''
         Arguments
@@ -110,7 +110,7 @@ class HMC(nn.Module):
             assume initial point of trajectory is given 
                 (TO DO: incorporate sampling here if useful)
                 
-        initial_weights : tensor.   (or could be handled elsewhere)
+        (initial_weights : tensor... should be handled elsewhere since we may end up doing SNIS using r(z|x) density for general flows)
         
         energy_z : losses.energies.InterpolatedEnergy
             option to replace (if necessary?)
@@ -119,7 +119,7 @@ class HMC(nn.Module):
         ----------
         final_samples = (current_z, current_v) : tensors
 
-        Δ log density ( = 0 for hamiltonian dynamics), or initial_weights + Δ log density
+        Δ log density ( = 0 for hamiltonian dynamics)
 
         '''
         if energy_z is not None:
@@ -152,8 +152,7 @@ class HMC(nn.Module):
         # if not hparams.model_name == 'prior_vae':
         #     z.detach_()
         #     v.detach_()
-        return (z, v), initial_weights
-
+        return (z, v), torch.sum(torch.zeros_like(z), dim=-1)
 
 
 
