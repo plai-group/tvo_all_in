@@ -70,6 +70,7 @@ class InterpolatedEnergy:
         return self.grad(z, x, multi_sample)
 
 
+# Eventually of a FLOW (or Transform) base class (e.g. RealNVP, IAF, etc.) e.g. (https://github.com/bayesiains/nflows/tree/master/nflows)
 class HMC(nn.Module):
 
     '''
