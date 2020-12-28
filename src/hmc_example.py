@@ -1,8 +1,9 @@
-
+import torch
+from torch import nn
 from losses.energies import InterpolatedEnergy
 # Change to inherit from Flow Class:  class HMC(Flow2D): or  class HMC(FlowLayer):
 
-class InterpolatedEnergy(object):
+class InterpolatedEnergy:
     ''' Parameters 
         ------------
         log_pi0 : function which takes (z, x) arguments
@@ -30,7 +31,6 @@ class InterpolatedEnergy(object):
         # just in case needed?  not sure
         self.kwargs0 = kwargs0    
         self.kwargs1 = kwargs1
-        super().__init__()
 
     def log_prob(self, z, x = None):
         if self.q == 1:
