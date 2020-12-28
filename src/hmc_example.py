@@ -101,7 +101,7 @@ class HMC(nn.Module):
         self.energy_z = energy_z
         super().__init__()
 
-    def forward(self, initial_samples, x, energy_z = None):
+    def forward(self, initial_samples, initial_weights, x, energy_z = None):
 
         '''
         Arguments
@@ -150,7 +150,7 @@ class HMC(nn.Module):
         # if not hparams.model_name == 'prior_vae':
         #     z.detach_()
         #     v.detach_()
-        return (z, v), torch.sum(torch.zeros_like(z), dim=-1)
+        return (z, v), initial_weights
 
 
 
